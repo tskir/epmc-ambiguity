@@ -5,6 +5,22 @@ import argparse
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, collect_set, count, countDistinct, explode, size, struct, when, min
 
+
+def distinct_mappings(df):
+    print('\n### Total number of distinct label to keyword mappings')
+    print(
+        df
+        .groupby('type')
+        .agg(size(collect_set(struct('label', 'keywordId'))))
+        .toPandas()
+        .to_markdown()
+    )
+
+
+def app_synonyms(df):
+    print('\n### ')
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--matches', help='Path to the `matches` dataset')
 args = parser.parse_args()
@@ -13,25 +29,6 @@ spark = SparkSession.builder.appName('epmc_ambiguity').getOrCreate()
 matches = spark.read.parquet(args.matches)
 matches_mapped = matches.filter(col('isMapped') == True)
 
-# print('Total number of records')
-# print(
-#     matches_mapped
-#     .groupby('type')
-#     .agg(count(col('keywordId')))
-#     .toPandas()
-#     .to_markdown()
-# )
-
-print('Total number of distinct label to keyword mappings [before filtering]')
-print(
-    matches_mapped
-    .groupby('type')
-    .agg(size(collect_set(struct('label', 'keywordId'))))
-    .toPandas()
-    .to_markdown()
-)
-
-print('Total number of distinct label to keyword mappings [after filtering]')
 matches_filtered = (
     matches_mapped
     # .filter(col('type') == 'GP')
@@ -56,10 +53,9 @@ matches_filtered = (
     .withColumn('label', explode('distinctLabels'))
     .drop('distinctLabels', 'minLabelMappingsForKeyword')
 )
-print(
-    matches_filtered
-    .groupby('type')
-    .agg(size(collect_set(struct('label', 'keywordId'))))
-    .toPandas()
-    .to_markdown()
-)
+
+print('# Filtering run results')
+for df, desc in ((matches_mapped, 'Before filtering'), (matches_filtered, 'After filtering')):
+    print(f'\n## {desc}')
+    distinct_mappings(df)
+    app_synonyms(df)

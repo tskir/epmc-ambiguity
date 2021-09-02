@@ -13,26 +13,26 @@ spark = SparkSession.builder.appName('epmc_ambiguity').getOrCreate()
 matches = spark.read.parquet(args.matches)
 matches_mapped = matches.filter(col('isMapped') == True)
 
-# print('Total number of records:')
-# print(
-#     matches_mapped
-#     .groupby('type')
-#     .agg(count(col('keywordId')))
-#     .toPandas()
-# )
+print('Total number of records:')
+print(
+    matches_mapped
+    .groupby('type')
+    .agg(count(col('keywordId')))
+    .toPandas()
+)
 
-# print('Total number of distinct label to keyword mappings [before filtering]')
-# print(
-#     matches_mapped
-#     .groupby('type')
-#     .agg(size(collect_set(struct('label', 'keywordId'))))
-#     .toPandas()
-# )
+print('Total number of distinct label to keyword mappings [before filtering]')
+print(
+    matches_mapped
+    .groupby('type')
+    .agg(size(collect_set(struct('label', 'keywordId'))))
+    .toPandas()
+)
 
 print('Total number of distinct label to keyword mappings [after filtering]')
 matches_filtered = (
     matches_mapped
-    .filter(col('type') == 'GP')
+    # .filter(col('type') == 'GP')
 
     # For each label (original text), see how many keywords it maps to within the context of the article.
     # When a label maps to only one keyword, it is considered unambiguous.

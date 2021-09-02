@@ -18,7 +18,16 @@ def distinct_mappings(df):
 
 
 def app_synonyms(df):
-    print('\n### ')
+    print('\n### Global list of APP gene synonyms (ENSG00000142192)')
+    print(
+        df
+        .filter(col('type') == 'GP')
+        .filter(col('keywordId') == 'ENSG00000142192')
+        .select('label')
+        .distinct()
+        .toPandas()
+        .to_markdown()
+    )
 
 
 parser = argparse.ArgumentParser()
@@ -31,7 +40,7 @@ matches_mapped = matches.filter(col('isMapped') == True)
 
 matches_filtered = (
     matches_mapped
-    # .filter(col('type') == 'GP')
+    .filter(col('type') == 'GP')
 
     # For each label (original text), see how many keywords it maps to within the context of the article.
     # When a label maps to only one keyword, it is considered unambiguous.
@@ -57,5 +66,5 @@ matches_filtered = (
 print('# Filtering run results')
 for df, desc in ((matches_mapped, 'Before filtering'), (matches_filtered, 'After filtering')):
     print(f'\n## {desc}')
-    distinct_mappings(df)
+    # distinct_mappings(df)
     app_synonyms(df)

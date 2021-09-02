@@ -13,13 +13,14 @@ spark = SparkSession.builder.appName('epmc_ambiguity').getOrCreate()
 matches = spark.read.parquet(args.matches)
 matches_mapped = matches.filter(col('isMapped') == True)
 
-print('Total number of records:')
-print(
-    matches_mapped
-    .groupby('type')
-    .agg(count(col('keywordId')))
-    .toPandas()
-)
+# print('Total number of records')
+# print(
+#     matches_mapped
+#     .groupby('type')
+#     .agg(count(col('keywordId')))
+#     .toPandas()
+#     .to_markdown()
+# )
 
 print('Total number of distinct label to keyword mappings [before filtering]')
 print(
@@ -27,6 +28,7 @@ print(
     .groupby('type')
     .agg(size(collect_set(struct('label', 'keywordId'))))
     .toPandas()
+    .to_markdown()
 )
 
 print('Total number of distinct label to keyword mappings [after filtering]')
@@ -59,4 +61,5 @@ print(
     .groupby('type')
     .agg(size(collect_set(struct('label', 'keywordId'))))
     .toPandas()
+    .to_markdown()
 )

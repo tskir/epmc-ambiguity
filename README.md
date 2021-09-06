@@ -1,15 +1,59 @@
-# Filtering run results
+# Total number of distinct label to keyword mappings
 
 ## Before filtering
-
-### Total number of distinct label to keyword mappings
 |    | type   |   size(collect_set(struct(label, keywordId))) |
 |---:|:-------|----------------------------------------------:|
 |  0 | DS     |                                        147497 |
 |  1 | GP     |                                        546131 |
 |  2 | CD     |                                         55922 |
 
-### Global list of APP gene synonyms (ENSG00000142192)
+## After filtering
+|    | type   |   size(collect_set(struct(label, keywordId))) |
+|---:|:-------|----------------------------------------------:|
+|  0 | DS     |                                        137718 |
+|  1 | GP     |                                        456926 |
+|  2 | CD     |                                         51687 |
+
+
+
+# p55 mapping counts by keyword and distinct PMID
+
+## Before filtering
+Total number of distinct PMIDs containing at least one p55 mapping: **2916.**
+
+|    | keywordId       |   size(collect_set(pmid)) |
+|---:|:----------------|--------------------------:|
+|  0 | ENSG00000226881 |                      2916 |
+|  1 | ENSG00000185624 |                      2916 |
+|  2 | ENSG00000157554 |                      2916 |
+|  3 | ENSG00000256525 |                      2916 |
+|  4 | ENSG00000117461 |                      2916 |
+|  5 | ENSG00000134460 |                      2916 |
+|  6 | ENSG00000197170 |                      2916 |
+|  7 | ENSG00000130830 |                      2916 |
+|  8 | ENSG00000075618 |                      2916 |
+|  9 | ENSG00000067182 |                      2916 |
+
+## After filtering
+Total number of distinct PMIDs containing at least one p55 mapping: **699.**
+
+|    | keywordId       |   size(collect_set(pmid)) |
+|---:|:----------------|--------------------------:|
+|  0 | ENSG00000185624 |                        11 |
+|  1 | ENSG00000157554 |                         8 |
+|  2 | ENSG00000256525 |                        13 |
+|  3 | ENSG00000117461 |                        29 |
+|  4 | ENSG00000134460 |                        26 |
+|  5 | ENSG00000197170 |                         8 |
+|  6 | ENSG00000130830 |                        26 |
+|  7 | ENSG00000075618 |                        16 |
+|  8 | ENSG00000067182 |                       572 |
+
+
+
+# Global list of APP gene synonyms (ENSG00000142192)
+
+## Before filtering
 |     | label                                             |
 |----:|:--------------------------------------------------|
 |   0 | Amyloid-beta protein precursor                    |
@@ -252,15 +296,6 @@
 | 237 | Alzheimer disease amyloid proteins                |
 
 ## After filtering
-
-### Total number of distinct label to keyword mappings
-|    | type   |   size(collect_set(struct(label, keywordId))) |
-|---:|:-------|----------------------------------------------:|
-|  0 | DS     |                                        137718 |
-|  1 | GP     |                                        456926 |
-|  2 | CD     |                                         51687 |
-
-### Global list of APP gene synonyms (ENSG00000142192)
 |     | label                                             |
 |----:|:--------------------------------------------------|
 |   0 | Amyloid-beta protein precursor                    |

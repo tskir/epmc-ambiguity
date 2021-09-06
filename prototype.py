@@ -6,28 +6,58 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, collect_set, count, countDistinct, explode, size, struct, when, min
 
 
-def distinct_mappings(df):
-    print('\n### Total number of distinct label to keyword mappings')
-    print(
-        df
-        .groupby('type')
-        .agg(size(collect_set(struct('label', 'keywordId'))))
-        .toPandas()
-        .to_markdown()
-    )
+def distinct_mappings(dfs):
+    print('# Total number of distinct label to keyword mappings')
+    for df, df_desc in dfs:
+        print(f'\n## {df_desc}')
+        print(
+            df
+            .groupby('type')
+            .agg(size(collect_set(struct('label', 'keywordId'))))
+            .toPandas()
+            .to_markdown()
+        )
 
 
-def app_synonyms(df):
-    print('\n### Global list of APP gene synonyms (ENSG00000142192)')
-    print(
-        df
-        .filter(col('type') == 'GP')
-        .filter(col('keywordId') == 'ENSG00000142192')
-        .select('label')
-        .distinct()
-        .toPandas()
-        .to_markdown()
-    )
+def p55_stats(dfs):
+    print('\n\n\n# p55 mapping counts')
+    for df, df_desc in dfs:
+        print(f'\n## {df_desc}')
+
+        total_distinct_pmids = (
+            df
+            .filter(col('type') == 'GP')
+            .filter(col('label') == 'p55')
+            .select('pmid')
+            .distinct()
+            .count()
+        )
+        print(f'Total number of distinct PMIDs containing at least one p55 mapping: **{total_distinct_pmids}.**\n')
+
+        # print(
+        #     df
+        #     .filter(col('type') == 'GP')
+        #     .filter(col('label') == 'p55')
+        #     .groupby('keywordId')
+        #     .agg(size(collect_set('pmid')))
+        #     .toPandas()
+        #     .to_markdown()
+        # )
+
+
+def app_synonyms(dfs):
+    print('\n\n\n# Global list of APP gene synonyms (ENSG00000142192)')
+    for df, df_desc in dfs:
+        print(f'\n## {df_desc}')
+        print(
+            df
+            .filter(col('type') == 'GP')
+            .filter(col('keywordId') == 'ENSG00000142192')
+            .select('label')
+            .distinct()
+            .toPandas()
+            .to_markdown()
+        )
 
 
 parser = argparse.ArgumentParser()
@@ -63,8 +93,7 @@ matches_filtered = (
     .drop('distinctLabels', 'minLabelMappingsForKeyword')
 )
 
-print('# Filtering run results')
-for df, desc in ((matches_mapped, 'Before filtering'), (matches_filtered, 'After filtering')):
-    print(f'\n## {desc}')
-    # distinct_mappings(df)
-    app_synonyms(df)
+dfs = ((matches_mapped, 'Before filtering'), (matches_filtered, 'After filtering'))
+# distinct_mappings(dfs)
+p55_stats(dfs)
+# app_synonyms(dfs)

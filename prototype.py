@@ -34,15 +34,15 @@ def p55_stats(dfs):
         )
         print(f'Total number of distinct PMIDs containing at least one p55 mapping: **{total_distinct_pmids}.**\n')
 
-        # print(
-        #     df
-        #     .filter(col('type') == 'GP')
-        #     .filter(col('label') == 'p55')
-        #     .groupby('keywordId')
-        #     .agg(size(collect_set('pmid')))
-        #     .toPandas()
-        #     .to_markdown()
-        # )
+        print(
+            df
+            .filter(col('type') == 'GP')
+            .filter(col('label') == 'p55')
+            .groupby('keywordId')
+            .agg(size(collect_set('pmid')))
+            .toPandas()
+            .to_markdown()
+        )
 
 
 def app_synonyms(dfs):
@@ -94,6 +94,6 @@ matches_filtered = (
 )
 
 dfs = ((matches_mapped, 'Before filtering'), (matches_filtered, 'After filtering'))
-# distinct_mappings(dfs)
+distinct_mappings(dfs)
 p55_stats(dfs)
-# app_synonyms(dfs)
+app_synonyms(dfs)

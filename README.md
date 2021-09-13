@@ -10,7 +10,9 @@
 ## After filtering
 |    | type   |   size(collect_set(struct(label, keywordId))) |
 |---:|:-------|----------------------------------------------:|
-|  0 | GP     |                                        564846 |
+|  0 | DS     |                                        148320 |
+|  1 | GP     |                                        564846 |
+|  0 | CD     |                                         56253 |
 
 
 

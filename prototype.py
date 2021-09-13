@@ -70,7 +70,7 @@ matches_mapped = matches.filter(col('isMapped') == True)
 
 matches_filtered = (
     matches_mapped
-    .filter(col('type') == 'GP')
+    .filter(col('type') == 'CD')
 
     # For each label (original text), see how many keywords it maps to within the context of the article.
     # When a label maps to only one keyword, it is considered unambiguous.
@@ -93,7 +93,10 @@ matches_filtered = (
     .drop('distinctLabels', 'minLabelMappingsForKeyword')
 )
 
-dfs = ((matches_mapped, 'Before filtering'), (matches_filtered, 'After filtering'))
+dfs = (
+    # (matches_mapped, 'Before filtering'),
+    (matches_filtered, 'After filtering'),
+)
 distinct_mappings(dfs)
-p55_stats(dfs)
-app_synonyms(dfs)
+# p55_stats(dfs)
+# app_synonyms(dfs)

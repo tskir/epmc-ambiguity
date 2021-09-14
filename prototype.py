@@ -97,13 +97,14 @@ matches_filtered = (
     )
     .filter(col('minLabelMappingsForKeyword') == 1)
     .withColumn('label', explode('distinctLabels'))
-    .drop('distinctLabels', 'minLabelMappingsForKeyword')
+    .drop('distinctLabels', 'minLabelMappingsForKeyword', 'distinctKeywordIdCountForLabel')
+    .distinct()
 )
 
 # Output the filtered matches dataset.
 (
-    matches_filtered
-    .join(matches_mapped, how='inner', on=['pmid', 'pmcid', 'type', 'label', 'keywordId'])
+    matches_mapped
+    .join(matches_filtered, how='inner', on=['pmid', 'pmcid', 'type', 'label', 'keywordId'])
     .write.format('parquet').save(args.filtered_output)
 )
 

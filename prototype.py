@@ -112,6 +112,6 @@ dfs = (
     (matches_mapped, 'Before filtering'),
     (matches_filtered, 'After filtering'),
 )
-# distinct_mappings(dfs)
-# p55_stats(dfs)
-# app_synonyms(dfs)
+distinct_mappings(dfs)
+p55_stats(dfs)
+app_synonyms(dfs)

@@ -62,6 +62,7 @@ def app_synonyms(dfs):
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--matches', help='Path to the `matches` dataset')
+parser.add_argument('--filtered-output', help='Output directory path where the filtered matches will be saved to')
 args = parser.parse_args()
 
 spark = SparkSession.builder.appName('epmc_ambiguity').getOrCreate()
@@ -70,7 +71,6 @@ matches_mapped = matches.filter(col('isMapped') == True)
 
 matches_filtered = (
     matches_mapped
-    .filter(col('type') == 'CD')
 
     # For each label (original text), see how many keywords it maps to within the context of the article.
     # When a label maps to only one keyword, it is considered unambiguous.
@@ -93,10 +93,17 @@ matches_filtered = (
     .drop('distinctLabels', 'minLabelMappingsForKeyword')
 )
 
+# Output the filtered matches dataset.
+(
+    matches_filtered
+    .join(matches_mapped, how='inner', on=['pmid', 'pmcid', 'type', 'label', 'keywordId'])
+    .write.format('parquet').save(args.filtered_output)
+)
+
 dfs = (
-    # (matches_mapped, 'Before filtering'),
+    (matches_mapped, 'Before filtering'),
     (matches_filtered, 'After filtering'),
 )
-distinct_mappings(dfs)
+# distinct_mappings(dfs)
 # p55_stats(dfs)
 # app_synonyms(dfs)

@@ -65,7 +65,14 @@ parser.add_argument('--matches', help='Path to the `matches` dataset')
 parser.add_argument('--filtered-output', help='Output directory path where the filtered matches will be saved to')
 args = parser.parse_args()
 
-spark = SparkSession.builder.appName('epmc_ambiguity').getOrCreate()
+spark = (
+    SparkSession
+    .builder
+    .appName('epmc_ambiguity')
+    .config("spark.executor.memory", '200G')
+    .config("spark.driver.memory", '200G')
+    .getOrCreate()
+)
 matches = spark.read.parquet(args.matches)
 matches_mapped = matches.filter(col('isMapped') == True)
 
